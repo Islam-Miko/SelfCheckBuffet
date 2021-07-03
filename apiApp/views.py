@@ -107,3 +107,36 @@ def food_detail(request, pk):
     elif request.method == 'DELETE':
         food.delete()
         return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET', 'POST'])
+def pin_list(request):
+    if request.method == 'GET':
+        foods = Pin.objects.all()
+        serializer = PinSerializer(foods, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = PinSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response('Successfully created', status=status.HTTP_201_CREATED)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def pin_detail(request, pk):
+    try:
+        pin = Pin.objects.get(id=pk)
+    except Pin.DoesNotExist:
+        return Response('Pin does not exist', status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = PinSerializer(pin)
+        return Response(serializer.data)
+    elif request.method == 'PUT':
+        serializer = PinSerializer(pin, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        pin.delete()
+        return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
