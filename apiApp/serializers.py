@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework import validators
 from .models import *
 from .validator_func  import *
 
@@ -35,7 +36,29 @@ class PinSerializer(serializers.ModelSerializer):
 
 
 
-class UserAdminSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserAdmin
-        fields = '__all__'
+class UserAdminSerializer(serializers.Serializer):
+    name = serializers.CharField(min_length=1,
+                                 max_length=25)
+    phone = serializers.CharField(max_length=10,
+                                  min_length=10)
+    pin = serializers.CharField(max_length=8,
+                                min_length=6,
+                                validators=[
+                                    validators.UniqueValidator(queryset=Pin.objects.all())
+                                ])
+    active = serializers.BooleanField(default=True,
+                                      required=False)
+
+    def create(self, validated_data):
+        pin_ob = validated_data.get('pin')
+        new_pin = Pin.objects.create(pin=pin_ob)
+        new_pin.save()
+        return UserAdmin.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.active = validated_data.get('active', instance.active)
+        instance.pin = validated_data.get('pin', instance.pin)
+        instance.save()
+        return instance

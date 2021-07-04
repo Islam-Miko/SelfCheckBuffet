@@ -4,6 +4,8 @@ from rest_framework.response import Response
 
 from .models import *
 from .serializers import *
+from .aux_func import create_pin
+from .exceptions import PhonePass
 
 
 @api_view(['GET', 'POST'])
@@ -110,49 +112,21 @@ def food_detail(request, pk):
 
 
 @api_view(['GET', 'POST'])
-def pin_list(request):
-    if request.method == 'GET':
-        foods = Pin.objects.all()
-        serializer = PinSerializer(foods, many=True)
-        return Response(serializer.data)
-    elif request.method == 'POST':
-        serializer = PinSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response('Successfully created', status=status.HTTP_201_CREATED)
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def pin_detail(request, pk):
-    try:
-        pin = Pin.objects.get(id=pk)
-    except Pin.DoesNotExist:
-        return Response('Pin does not exist', status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        serializer = PinSerializer(pin)
-        return Response(serializer.data)
-    elif request.method == 'PUT':
-        serializer = PinSerializer(pin, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        pin.delete()
-        return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(['GET', 'POST'])
 def user_list(request):
     if request.method == 'GET':
         user = UserAdmin.objects.all()
         serializer = UserAdminSerializer(user, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = UserAdminSerializer(data=request.data)
+        try:
+            data_with_pin = create_pin(request.data)
+        except PhonePass:
+            return Response('Поле телефон обязательное!')
+        serializer = UserAdminSerializer(data=data_with_pin)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response('Successfully created', status=status.HTTP_201_CREATED)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def user_detail(request, pk):
@@ -173,3 +147,37 @@ def user_detail(request, pk):
     elif request.method == 'DELETE':
         user_.delete()
         return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
+
+
+    
+# @api_view(['GET', 'POST'])
+# def pin_list(request):
+#     if request.method == 'GET':
+#         foods = Pin.objects.all()
+#         serializer = PinSerializer(foods, many=True)
+#         return Response(serializer.data)
+#     elif request.method == 'POST':
+#         serializer = PinSerializer(data=request.data)
+#         if serializer.is_valid(raise_exception=True):
+#             serializer.save()
+#             return Response('Successfully created', status=status.HTTP_201_CREATED)
+#
+# @api_view(['GET', 'PUT', 'DELETE'])
+# def pin_detail(request, pk):
+#     try:
+#         pin = Pin.objects.get(id=pk)
+#     except Pin.DoesNotExist:
+#         return Response('Pin does not exist', status=status.HTTP_404_NOT_FOUND)
+#
+#     if request.method == 'GET':
+#         serializer = PinSerializer(pin)
+#         return Response(serializer.data)
+#     elif request.method == 'PUT':
+#         serializer = PinSerializer(pin, data=request.data)
+#         if serializer.is_valid(raise_exception=True):
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     elif request.method == 'DELETE':
+#         pin.delete()
+#         return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
