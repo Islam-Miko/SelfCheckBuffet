@@ -11,6 +11,9 @@ urlpatterns = [
     path('food_list/', views.food_list),
     path('food_detail/<int:pk>/', views.food_detail),
 
+    path('user_list/', views.user_list),
+    path('user_detail/<int:pk>/', views.user_detail),
+
     path('pin_list/', views.pin_list),
     path('pin_detail/<int:pk>/', views.pin_detail),
 

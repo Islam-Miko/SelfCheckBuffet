@@ -33,3 +33,9 @@ class PinSerializer(serializers.ModelSerializer):
         if len(data) < 6:
             raise serializers.ValidationError(['Длина пина не может быть меньше 6'])
 
+
+
+class UserAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAdmin
+        fields = '__all__'

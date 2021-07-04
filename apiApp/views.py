@@ -140,3 +140,36 @@ def pin_detail(request, pk):
     elif request.method == 'DELETE':
         pin.delete()
         return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET', 'POST'])
+def user_list(request):
+    if request.method == 'GET':
+        user = UserAdmin.objects.all()
+        serializer = UserAdminSerializer(user, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = UserAdminSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response('Successfully created', status=status.HTTP_201_CREATED)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def user_detail(request, pk):
+    try:
+        user_ = UserAdmin.objects.get(id=pk)
+    except UserAdmin.DoesNotExist:
+        return Response('Does not exist', status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = UserAdminSerializer(user_)
+        return Response(serializer.data)
+    elif request.method == 'PUT':
+        serializer = UserAdminSerializer(user_, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        user_.delete()
+        return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
