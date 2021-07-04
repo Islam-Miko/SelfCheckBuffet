@@ -18,7 +18,11 @@ def course_list(request):
         serializer = CoursesSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response('Succesfully created', status=status.HTTP_201_CREATED)
+            res = {
+                "message": "Successfully created",
+                "item": serializer.data
+            }
+            return Response(res, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -47,13 +51,21 @@ def course_detail(request, pk):
 def student_list(request):
     if request.method == 'GET':
         students = Student.objects.all()
-        serializer = StudentSerializer(students, many=True)
+        serializer = StudentSerializer2(students, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = StudentSerializer(data=request.data)
+        try:
+            data_with_pin = create_pin(request.data)
+        except PhonePass:
+            return Response('Поле телефон обязательное!')
+        serializer = StudentSerializer2(data=data_with_pin)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response('Succesfully created', status=status.HTTP_201_CREATED)
+            res = {
+                "message": "Successfully created",
+                "item": serializer.data
+            }
+            return Response(res, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -88,7 +100,12 @@ def food_list(request):
         serializer = FoodSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response('Successfully created', status=status.HTTP_201_CREATED)
+            res = {
+                "message": "Successfully created",
+                "item": serializer.data
+            }
+            return Response(res, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def food_detail(request, pk):
@@ -125,7 +142,12 @@ def user_list(request):
         serializer = UserAdminSerializer(data=data_with_pin)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response('Successfully created', status=status.HTTP_201_CREATED)
+            res = {
+                "message" : "Successfully created",
+                "item" : serializer.data
+            }
+            return Response(res, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -149,7 +171,7 @@ def user_detail(request, pk):
         return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
 
 
-    
+
 # @api_view(['GET', 'POST'])
 # def pin_list(request):
 #     if request.method == 'GET':
