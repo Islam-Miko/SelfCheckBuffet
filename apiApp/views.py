@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from .models import *
 from .serializers import *
-from .aux_func import create_pin
+from .aux_func import create_pin, get_userAdmin
 from .exceptions import PhonePass
 
 
@@ -171,6 +171,21 @@ def user_detail(request, pk):
         return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
 
 
+
+
+
+@api_view(['POST'])
+def authentication(request):
+    serializer = AuthenticationSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    user_name = get_userAdmin(serializer.data)
+    if user_name.pin == serializer.data['userPin']:
+        res = {
+            "message": True
+        }
+        return Response(res, status=status.HTTP_200_OK)
+    else:
+        return Response('Неверные данные', status=status.HTTP_400_BAD_REQUEST)
 
 # @api_view(['GET', 'POST'])
 # def pin_list(request):

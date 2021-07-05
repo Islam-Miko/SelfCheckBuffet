@@ -1,4 +1,4 @@
-from .models import Pin
+from .models import Pin, UserAdmin
 from .exceptions import PhonePass
 
 def create_pin(request_data):
@@ -13,4 +13,10 @@ def create_pin(request_data):
     else:
         request_data['pin'] = phone[4:]
         return request_data
+
+
+
+def get_userAdmin(data):
+    user_admin = UserAdmin.objects.filter(phone=data['userPhone']).last()
+    return user_admin
 

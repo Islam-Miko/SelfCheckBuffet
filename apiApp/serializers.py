@@ -39,7 +39,10 @@ class UserAdminSerializer(serializers.Serializer):
     name = serializers.CharField(min_length=1,
                                  max_length=25)
     phone = serializers.CharField(max_length=10,
-                                  min_length=10)
+                                  min_length=10,
+                                  validators=[
+                                      check_for_numberic,
+                                  ])
     pin = serializers.CharField(max_length=8,
                                 min_length=6,
                                 validators=[
@@ -67,7 +70,10 @@ class StudentSerializer2(serializers.Serializer):
     name = serializers.CharField(max_length=25,
                                  min_length=1)
     phone = serializers.CharField(max_length=10,
-                                  min_length=10)
+                                  min_length=10,
+                                  validators=[
+                                      check_for_numberic,
+                                  ])
     pin = serializers.CharField(max_length=8,
                                 min_length=6,
                                 validators=[validators.UniqueValidator(queryset=Pin.objects.all())])
@@ -88,3 +94,14 @@ class StudentSerializer2(serializers.Serializer):
         instance.pin = validated_data.get('pin', instance.pin)
         instance.save()
         return instance
+
+
+class AuthenticationSerializer(serializers.Serializer):
+    userPhone = serializers.CharField(min_length=10,
+                                      max_length=10,
+                                      validators=[
+                                          check_for_numberic,
+                                          check_in_db
+                                      ])
+    userPin = serializers.CharField(max_length=8,
+                                    min_length=6)
