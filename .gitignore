@@ -1,6 +1,7 @@
 # Created by httpswww.toptal.comdevelopersgitignoreapipython,pycharm,django
 # Edit at httpswww.toptal.comdevelopersgitignoretemplates=python,pycharm,django
 .idea
+urls_for_front.pdf
 ### Django ###
 .log
 .pot

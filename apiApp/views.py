@@ -107,6 +107,7 @@ def food_list(request):
             return Response(res, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET', 'PUT', 'DELETE'])
 def food_detail(request, pk):
     try:
