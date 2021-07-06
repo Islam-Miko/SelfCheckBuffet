@@ -5,6 +5,10 @@ from .validator_func  import *
 
 
 class CoursesSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=255, min_length=1,
+                                 validators=[
+                                     validators.UniqueValidator(queryset=Course.objects.all())
+                                 ])
     class Meta:
         model = Course
         fields = '__all__'

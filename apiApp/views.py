@@ -11,7 +11,7 @@ from .exceptions import PhonePass, NoInDb
 @api_view(['GET', 'POST'])
 def course_list(request):
     if request.method == 'GET':
-        all_courses = Course.objects.all()
+        all_courses = Course.objects.all().order_by('id')
         serializer = CoursesSerializer(all_courses, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
@@ -50,7 +50,7 @@ def course_detail(request, pk):
 @api_view(['GET', 'POST'])
 def student_list(request):
     if request.method == 'GET':
-        students = Student.objects.all()
+        students = Student.objects.all().order_by('id')
         serializer = StudentSerializer2(students, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
@@ -93,7 +93,7 @@ def student_detail(request, pk):
 @api_view(['GET', 'POST'])
 def food_list(request):
     if request.method == 'GET':
-        foods = Food.objects.all()
+        foods = Food.objects.all().order_by('id')
         serializer = FoodSerializer(foods, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
@@ -132,7 +132,7 @@ def food_detail(request, pk):
 @api_view(['GET', 'POST'])
 def user_list(request):
     if request.method == 'GET':
-        user = UserAdmin.objects.all()
+        user = UserAdmin.objects.all().order_by('id')
         serializer = UserAdminSerializer(user, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
