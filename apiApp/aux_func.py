@@ -1,5 +1,5 @@
 from .models import Pin, UserAdmin
-from .exceptions import PhonePass
+from .exceptions import PhonePass, NoInDb
 
 def create_pin(request_data):
     phone = request_data.get('phone')
@@ -18,5 +18,12 @@ def create_pin(request_data):
 
 def get_userAdmin(data):
     user_admin = UserAdmin.objects.filter(phone=data['userPhone']).last()
-    return user_admin
+    if user_admin:
+        return user_admin
+
+
+def check_in_DB(phone):
+    user_admin = UserAdmin.objects.filter(phone=phone).last()
+    if not user_admin:
+        raise NoInDb
 

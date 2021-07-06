@@ -4,8 +4,8 @@ from rest_framework.response import Response
 
 from .models import *
 from .serializers import *
-from .aux_func import create_pin, get_userAdmin
-from .exceptions import PhonePass
+from .aux_func import create_pin, get_userAdmin, check_in_DB
+from .exceptions import PhonePass, NoInDb
 
 
 @api_view(['GET', 'POST'])
@@ -123,10 +123,10 @@ def food_detail(request, pk):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
     elif request.method == 'DELETE':
         food.delete()
-        return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET', 'POST'])
@@ -180,13 +180,30 @@ def authentication(request):
     serializer = AuthenticationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     user_name = get_userAdmin(serializer.data)
+    if user_name is None:
+        res = {
+            "message": False
+        }
+        return Response(res, status=status.HTTP_400_BAD_REQUEST)
     if user_name.pin == serializer.data['userPin']:
         res = {
             "message": True
         }
         return Response(res, status=status.HTTP_200_OK)
     else:
-        return Response('Неверные данные', status=status.HTTP_400_BAD_REQUEST)
+        res = {
+            "message": False
+        }
+        return Response(res, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def search(request, name):
+    students = Student.objects.filter(name=name)
+    if students:
+        serializer = StudentSerializer(students, many=True)
+        return Response(serializer.data)
+    return Response(False, status=status.HTTP_404_NOT_FOUND)
 
 # @api_view(['GET', 'POST'])
 # def pin_list(request):
