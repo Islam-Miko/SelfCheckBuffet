@@ -22,17 +22,17 @@ class FoodSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PinSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Pin
-        fields = '__all__'
-
-    def validate_pin(self, data):
-        if not data.isnumeric():
-            raise serializers.ValidationError(['Может содержать лишь цифры!'])
-
-        if len(data) < 6:
-            raise serializers.ValidationError(['Длина пина не может быть меньше 6'])
+# class PinSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Pin
+#         fields = '__all__'
+#
+#     def validate_pin(self, data):
+#         if not data.isnumeric():
+#             raise serializers.ValidationError(['Может содержать лишь цифры!'])
+#
+#         if len(data) < 6:
+#             raise serializers.ValidationError(['Длина пина не может быть меньше 6'])
 
 
 class UserAdminSerializer(serializers.Serializer):
@@ -67,8 +67,11 @@ class UserAdminSerializer(serializers.Serializer):
 
 
 class StudentSerializer2(serializers.Serializer):
+    id = serializers.ReadOnlyField()
     name = serializers.CharField(max_length=25,
                                  min_length=1)
+    last_name = serializers.CharField(max_length=50,
+                                      min_length=1)
     phone = serializers.CharField(max_length=10,
                                   min_length=10,
                                   validators=[
@@ -89,6 +92,7 @@ class StudentSerializer2(serializers.Serializer):
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.phone = validated_data.get('phone', instance.phone)
         instance.course = validated_data.get('course', instance.course)
         instance.pin = validated_data.get('pin', instance.pin)

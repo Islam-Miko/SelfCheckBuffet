@@ -9,6 +9,7 @@ class Course(models.Model):
     start_date = models.DateField(verbose_name='Дата начала курса')
     end_date = models.DateField(verbose_name='Дата окончания курса')
     price = models.FloatField(verbose_name='Цена')
+    time = models.CharField('Время', max_length=5, default='08:00')
 
     def __str__(self):
         return self.name
@@ -16,12 +17,13 @@ class Course(models.Model):
 
 class Student(models.Model):
     name = models.CharField('Имя', max_length=25)
+    last_name = models.CharField('Фамилия', max_length=50, default='')
     phone = models.CharField('Телефон', max_length=10)
     pin = models.CharField('Пин', max_length=8)
     course = models.ForeignKey(verbose_name='Курс', to=Course, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return f'{self.name} {self.last_name}'
 
 
 class UserAdmin(models.Model):

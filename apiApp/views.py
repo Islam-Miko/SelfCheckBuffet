@@ -31,7 +31,7 @@ def course_detail(request, pk):
     try:
         course = Course.objects.get(id=pk)
     except Course.DoesNotExist:
-        return Response('DOESNOTEXIST', status=status.HTTP_404_NOT_FOUND)
+        return Response(False, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = CoursesSerializer(course)
@@ -74,13 +74,13 @@ def student_detail(request, pk):
     try:
         student = Student.objects.get(id=pk)
     except Student.DoesNotExist:
-        return Response('Student does not exist', status=status.HTTP_404_NOT_FOUND)
+        return Response(False, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = StudentSerializer(student)
+        serializer = StudentSerializer2(student)
         return Response(serializer.data)
     elif request.method == 'PUT':
-        serializer = StudentSerializer(student, data=request.data)
+        serializer = StudentSerializer2(student, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
