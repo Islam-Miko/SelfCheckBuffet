@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -172,9 +174,6 @@ def user_detail(request, pk):
         return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
 
 
-
-
-
 @api_view(['POST'])
 def authentication(request):
     serializer = AuthenticationSerializer(data=request.data)
@@ -201,6 +200,15 @@ def search(request, name):
         serializer = StudentSerializer(students, many=True)
         return Response(serializer.data)
     return Response(False, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+def active_courses(request):
+    all_active_courses = Course.objects.filter(start_date__lte=datetime.datetime.now(),
+                                               end_date__gt=datetime.datetime.now()).order_by('id')
+    serializer = CoursesSerializer(all_active_courses, many=True)
+    return Response(serializer.data)
+
 
 # @api_view(['GET', 'POST'])
 # def pin_list(request):
