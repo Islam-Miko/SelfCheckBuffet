@@ -103,4 +103,7 @@ class AuthenticationSerializer(serializers.Serializer):
                                           check_for_numberic,
                                       ])
     userPin = serializers.CharField(max_length=8,
-                                    min_length=6)
+                                    min_length=6,
+                                    validators=[
+                                        check_for_numberic,
+                                    ])

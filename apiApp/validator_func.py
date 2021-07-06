@@ -4,7 +4,7 @@ from .models import UserAdmin
 
 def check_for_numberic(phone):
     if not phone.isdigit():
-        raise serializers.ValidationError(['Номер не может содержать буквы!'])
+        raise serializers.ValidationError(['Может содержать только цифры!'])
 
 
 def check_in_db(phone):

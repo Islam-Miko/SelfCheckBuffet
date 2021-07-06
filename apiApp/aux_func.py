@@ -17,9 +17,8 @@ def create_pin(request_data):
 
 
 def get_userAdmin(data):
-    user_admin = UserAdmin.objects.filter(phone=data['userPhone']).last()
-    if user_admin:
-        return user_admin
+    user_admin = UserAdmin.objects.filter(phone=data['userPhone']).get()
+    return user_admin
 
 
 def check_in_DB(phone):

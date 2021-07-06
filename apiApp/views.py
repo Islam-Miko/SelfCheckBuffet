@@ -156,7 +156,7 @@ def user_detail(request, pk):
     try:
         user_ = UserAdmin.objects.get(id=pk)
     except UserAdmin.DoesNotExist:
-        return Response('Does not exist', status=status.HTTP_404_NOT_FOUND)
+        return Response(False, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = UserAdminSerializer(user_)
@@ -179,22 +179,19 @@ def user_detail(request, pk):
 def authentication(request):
     serializer = AuthenticationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    user_name = get_userAdmin(serializer.data)
-    if user_name is None:
-        res = {
-            "message": False
-        }
-        return Response(res, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        user_name = get_userAdmin(serializer.data)
+    except UserAdmin.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
     if user_name.pin == serializer.data['userPin']:
         res = {
             "message": True
         }
         return Response(res, status=status.HTTP_200_OK)
-    else:
-        res = {
-            "message": False
-        }
-        return Response(res, status=status.HTTP_400_BAD_REQUEST)
+    res = {
+        "message": False
+    }
+    return Response(res, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
