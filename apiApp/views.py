@@ -196,7 +196,7 @@ def authentication(request):
 
 @api_view(['GET'])
 def search(request, name):
-    students = Student.objects.filter(name=name)
+    students = Student.objects.filter(name__icontains=f'{name}').all().order_by('last_name')
     if students:
         serializer = StudentSerializer(students, many=True)
         return Response(serializer.data)
