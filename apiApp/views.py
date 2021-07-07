@@ -1,9 +1,10 @@
 import datetime
-
+from rest_framework import views
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+from rest_framework.parsers import FileUploadParser
+from django.views.decorators.csrf import csrf_exempt
 from .models import *
 from .serializers import *
 from .aux_func import create_pin, get_userAdmin, check_in_DB
@@ -11,6 +12,7 @@ from .exceptions import PhonePass, NoInDb
 
 
 @api_view(['GET', 'POST'])
+@csrf_exempt
 def course_list(request):
     if request.method == 'GET':
         all_courses = Course.objects.all().order_by('id')
@@ -29,6 +31,7 @@ def course_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@csrf_exempt
 def course_detail(request, pk):
     try:
         course = Course.objects.get(id=pk)
@@ -50,6 +53,7 @@ def course_detail(request, pk):
 
 
 @api_view(['GET', 'POST'])
+@csrf_exempt
 def student_list(request):
     if request.method == 'GET':
         students = Student.objects.all().order_by('id')
@@ -72,6 +76,7 @@ def student_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@csrf_exempt
 def student_detail(request, pk):
     try:
         student = Student.objects.get(id=pk)
@@ -93,6 +98,7 @@ def student_detail(request, pk):
 
 
 @api_view(['GET', 'POST'])
+@csrf_exempt
 def food_list(request):
     if request.method == 'GET':
         foods = Food.objects.all().order_by('id')
@@ -111,6 +117,7 @@ def food_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@csrf_exempt
 def food_detail(request, pk):
     try:
         food = Food.objects.get(id=pk)
@@ -132,6 +139,7 @@ def food_detail(request, pk):
 
 
 @api_view(['GET', 'POST'])
+@csrf_exempt
 def user_list(request):
     if request.method == 'GET':
         user = UserAdmin.objects.all().order_by('id')
@@ -154,6 +162,7 @@ def user_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@csrf_exempt
 def user_detail(request, pk):
     try:
         user_ = UserAdmin.objects.get(id=pk)
@@ -175,6 +184,7 @@ def user_detail(request, pk):
 
 
 @api_view(['POST'])
+@csrf_exempt
 def authentication(request):
     serializer = AuthenticationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -208,6 +218,24 @@ def active_courses(request):
                                                end_date__gt=datetime.datetime.now()).order_by('id')
     serializer = CoursesSerializer(all_active_courses, many=True)
     return Response(serializer.data)
+#
+# class ImageLoad(views.APIView):
+#
+#     def get(self, request, format=None):
+#         all_f = Course.objects.all()
+#         serializer = CoursesSerializer(all_f, many=True)
+#         return Response(serializer.data)
+#
+#     def post(self, request, format=None):
+#         serializer = CoursesSerializer(data=request.data)
+#         if serializer.is_valid(raise_exception=True):
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#
+#
+#
+
 
 
 # @api_view(['GET', 'POST'])

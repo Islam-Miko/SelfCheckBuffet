@@ -115,3 +115,9 @@ class AuthenticationSerializer(serializers.Serializer):
                                     validators=[
                                         check_for_numberic,
                                     ])
+
+
+# class FoodSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Food
+#         fields = '__all__'

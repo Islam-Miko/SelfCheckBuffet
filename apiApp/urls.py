@@ -17,7 +17,11 @@ urlpatterns = [
     path('authentication/', views.authentication),
 
     path('search_student/<str:name>/', views.search),
+
     path('courses/', views.active_courses),
+
+
+    # path('imageLoad/', views.ImageLoad.as_view()),
 
     # path('pin_list/', views.pin_list),
     # path('pin_detail/<int:pk>/', views.pin_detail),
