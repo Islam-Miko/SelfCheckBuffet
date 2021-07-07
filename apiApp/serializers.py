@@ -84,6 +84,7 @@ class StudentSerializer2(serializers.Serializer):
     pin = serializers.CharField(max_length=8,
                                 min_length=6,
                                 validators=[validators.UniqueValidator(queryset=Pin.objects.all())])
+    # course = CoursesSerializer()
     course = serializers.SlugRelatedField(slug_field='name',
                                           queryset=Course.objects.all()
                                           )
@@ -93,6 +94,16 @@ class StudentSerializer2(serializers.Serializer):
         new_pin = Pin.objects.create(pin=pin_ob)
         new_pin.save()
         return Student.objects.create(**validated_data)
+
+        # pin_ob = validated_data.get('pin')
+        # course = validated_data.pop('course')
+        # new_or_old, flag = Course.objects.get_or_create(**course)
+        # if flag:
+        #     new_or_old.save()
+        # new_pin = Pin.objects.create(pin=pin_ob)
+        # new_pin.save()
+        # return Student.objects.create(course=new_or_old, **validated_data)
+
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
@@ -105,12 +116,12 @@ class StudentSerializer2(serializers.Serializer):
 
 
 class AuthenticationSerializer(serializers.Serializer):
-    userPhone = serializers.CharField(min_length=10,
+    Phone = serializers.CharField(min_length=10,
                                       max_length=10,
                                       validators=[
                                           check_for_numberic,
                                       ])
-    userPin = serializers.CharField(max_length=8,
+    Pin = serializers.CharField(max_length=8,
                                     min_length=6,
                                     validators=[
                                         check_for_numberic,

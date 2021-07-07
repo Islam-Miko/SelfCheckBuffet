@@ -22,15 +22,11 @@ def course_list(request):
         serializer = CoursesSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            res = {
-                "message": "Successfully created",
-                "item": serializer.data
-            }
-            return Response(res, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT'])
 @csrf_exempt
 def course_detail(request, pk):
     try:
@@ -47,9 +43,7 @@ def course_detail(request, pk):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        course.delete()
-        return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
+
 
 
 @api_view(['GET', 'POST'])
@@ -67,15 +61,11 @@ def student_list(request):
         serializer = StudentSerializer2(data=data_with_pin)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            res = {
-                "message": "Successfully created",
-                "item": serializer.data
-            }
-            return Response(res, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT'])
 @csrf_exempt
 def student_detail(request, pk):
     try:
@@ -92,9 +82,6 @@ def student_detail(request, pk):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        student.delete()
-        return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET', 'POST'])
@@ -149,19 +136,15 @@ def user_list(request):
         try:
             data_with_pin = create_pin(request.data)
         except PhonePass:
-            return Response('Поле телефон обязательное!')
+            return Response('Поле телефон обязательное!', status=status.HTTP_400_BAD_REQUEST)
         serializer = UserAdminSerializer(data=data_with_pin)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            res = {
-                "message" : "Successfully created",
-                "item" : serializer.data
-            }
-            return Response(res, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT'])
 @csrf_exempt
 def user_detail(request, pk):
     try:
@@ -178,9 +161,7 @@ def user_detail(request, pk):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        user_.delete()
-        return Response('DELETED', status=status.HTTP_204_NO_CONTENT)
+
 
 
 @api_view(['POST'])
@@ -192,13 +173,13 @@ def authentication(request):
         user_name = get_userAdmin(serializer.data)
     except UserAdmin.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    if user_name.pin == serializer.data['userPin']:
+    if user_name.pin == serializer.data['Pin']:
         res = {
-            "message": True
+            "success": True
         }
         return Response(res, status=status.HTTP_200_OK)
     res = {
-        "message": False
+        "success": False
     }
     return Response(res, status=status.HTTP_400_BAD_REQUEST)
 
@@ -218,7 +199,15 @@ def active_courses(request):
                                                end_date__gt=datetime.datetime.now()).order_by('id')
     serializer = CoursesSerializer(all_active_courses, many=True)
     return Response(serializer.data)
-#
+
+class FoodActiveList(views.APIView):
+
+    def get(self, request):
+        all_active_food = Food.objects.filter(active=True).order_by('id')
+        serializer = FoodSerializer(all_active_food, many=True)
+        return Response(serializer.data)
+
+
 # class ImageLoad(views.APIView):
 #
 #     def get(self, request, format=None):
