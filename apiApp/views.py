@@ -1,4 +1,6 @@
 import datetime
+
+from django.db.models import Sum
 from rest_framework import views
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -95,21 +97,17 @@ def food_list(request):
         serializer = FoodSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            res = {
-                "message": "Successfully created",
-                "item": serializer.data
-            }
-            return Response(res, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT'])
 @csrf_exempt
 def food_detail(request, pk):
     try:
         food = Food.objects.get(id=pk)
     except Food.DoesNotExist:
-        return Response('Food does not exist', status=status.HTTP_404_NOT_FOUND)
+        return Response(False, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = FoodSerializer(food)
@@ -120,9 +118,7 @@ def food_detail(request, pk):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
-    elif request.method == 'DELETE':
-        food.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 @api_view(['GET', 'POST'])
@@ -201,11 +197,46 @@ def active_courses(request):
     return Response(serializer.data)
 
 class FoodActiveList(views.APIView):
-
     def get(self, request):
         all_active_food = Food.objects.filter(active=True).order_by('id')
         serializer = FoodSerializer(all_active_food, many=True)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+@csrf_exempt
+def pin_debt(request, pin):
+    debt_in_operation = Operation.objects.filter(pin=pin).values('pin').annotate(total_debt=Sum('debt_sum'))
+    return Response(debt_in_operation)
+
+
+class OperationView(views.APIView):
+    def get(self, request):
+        operations = Operation.objects.all()
+        serializer = OperationSerializer(operations, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = OperationSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OperationPinView(views.APIView):
+    def get(self, request, pin):
+        operations = Operation.objects.filter(pin=pin)
+        serializer = OperationSerializer(operations, many=True)
+        return Response(serializer.data)
+
+
+class OperationDebtPinView(views.APIView):
+    def get(self, request, pin):
+        operations = Operation.objects.filter(pin=pin, status='ACTIVE')
+        serializer = OperationSerializer(operations, many=True)
+        return Response(serializer.data)
+
 
 
 # class ImageLoad(views.APIView):

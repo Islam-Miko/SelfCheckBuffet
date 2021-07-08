@@ -8,8 +8,8 @@ urlpatterns = [
     path('student', views.student_list),
     path('student/<int:pk>', views.student_detail),
 
-    path('food_list/', views.food_list),
-    path('food_detail/<int:pk>/', views.food_detail),
+    path('food/', views.food_list),
+    path('food/<int:pk>/', views.food_detail),
 
     path('user', views.user_list),
     path('user<int:pk>/', views.user_detail),
@@ -20,9 +20,16 @@ urlpatterns = [
 
     path('courses/', views.active_courses),
 
-    # url for flutter
+    path('food/active', views.FoodActiveList.as_view()),
 
-    path('food/', views.FoodActiveList.as_view()),
+    path('pin/<str:pin>', views.pin_debt),
+
+
+    path('operation', views.OperationView.as_view()),
+    path('operation/<str:pin>', views.OperationPinView.as_view()),
+    path('operation/debt/<str:pin>', views.OperationDebtPinView.as_view()),
+    # path('pin/make/payment', views.payment),
+
 
 
     # path('imageLoad/', views.ImageLoad.as_view()),

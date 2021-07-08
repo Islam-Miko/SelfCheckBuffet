@@ -128,7 +128,9 @@ class AuthenticationSerializer(serializers.Serializer):
                                     ])
 
 
-# class FoodSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Food
-#         fields = '__all__'
+
+
+class OperationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Operation
+        fields = '__all__'
