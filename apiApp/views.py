@@ -5,12 +5,10 @@ from rest_framework import views
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.parsers import FileUploadParser
 from django.views.decorators.csrf import csrf_exempt
-from .models import *
 from .serializers import *
-from .aux_func import create_pin, get_userAdmin, check_in_DB
-from .exceptions import PhonePass, NoInDb
+from .aux_func import create_pin, get_userAdmin
+from .exceptions import PhonePass
 
 
 @api_view(['GET', 'POST'])
@@ -196,6 +194,7 @@ def active_courses(request):
     serializer = CoursesSerializer(all_active_courses, many=True)
     return Response(serializer.data)
 
+
 class FoodActiveList(views.APIView):
     def get(self, request):
         all_active_food = Food.objects.filter(active=True).order_by('id')
@@ -239,22 +238,6 @@ class OperationDebtPinView(views.APIView):
 
 
 
-# class ImageLoad(views.APIView):
-#
-#     def get(self, request, format=None):
-#         all_f = Course.objects.all()
-#         serializer = CoursesSerializer(all_f, many=True)
-#         return Response(serializer.data)
-#
-#     def post(self, request, format=None):
-#         serializer = CoursesSerializer(data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#
-#
 
 
 
