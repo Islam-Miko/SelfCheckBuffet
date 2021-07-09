@@ -3,7 +3,9 @@ from apiApp import views
 
 urlpatterns = [
     path('course', views.course_list),
+    # Получение списка всех курсов, создание нового курса(GET, POST)
     path('course/<int:pk>', views.course_detail),
+    # Получение одного курса по id, изменение его данных (GET, PUT)
 
     path('student', views.student_list),
     # Получение списка всех студентов, создание нового студента(GET, POST)

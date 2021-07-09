@@ -5,7 +5,8 @@ from .validator_func  import *
 
 
 class CoursesSerializer(serializers.ModelSerializer):
-    """Для создания курса"""
+    """Для создания курса,
+    редактирования"""
     name = serializers.CharField(max_length=255, min_length=1,
                                  validators=[
                                      validators.UniqueValidator(queryset=Course.objects.all())
@@ -15,7 +16,8 @@ class CoursesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CoursesSerializer2(serializers.ModelSerializer):
-    """Для добавления к студенту курса"""
+    """Для добавления к студенту курса
+    Если надо будет работать с нестед json у студента"""
     class Meta:
         model = Course
         fields = '__all__'
@@ -125,6 +127,7 @@ class StudentSerializer2(serializers.Serializer):
         instance.save()
         return instance
 
+
 class StudentUpdateSerializer(serializers.ModelSerializer):
     """Сериалайзер для редактирования студента"""
     pin = serializers.CharField(max_length=8,
@@ -135,6 +138,7 @@ class StudentUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = '__all__'
+
 
 class AuthenticationSerializer(serializers.Serializer):
     phone = serializers.CharField(min_length=10,
