@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Course(models.Model):
+    active = models.BooleanField(default=True)
     name = models.CharField('Наименование', max_length=255)
     mentor = models.CharField('Ментор', blank=True, max_length=255, null=True)
     assistant = models.CharField('Ассистент', blank=True, max_length=255, null=True)
@@ -16,6 +17,7 @@ class Course(models.Model):
 
 
 class Student(models.Model):
+    active = models.BooleanField(default=True)
     name = models.CharField('Имя', max_length=25)
     last_name = models.CharField('Фамилия', max_length=50, default='')
     phone = models.CharField('Телефон', max_length=10)
@@ -37,6 +39,7 @@ class UserAdmin(models.Model):
 
 
 class Food(models.Model):
+    amount = models.PositiveSmallIntegerField('Количество', default=0)
     name = models.CharField('Food', max_length=50)
     image = models.ImageField(verbose_name='Ссылка на картинку', upload_to='buffet/')
     price = models.FloatField('Цена')
@@ -47,6 +50,8 @@ class Food(models.Model):
 
 
 class Pin(models.Model):
+    active = models.BooleanField(default=True)
+    debt = models.FloatField('Долг', default=0.0)
     pin = models.CharField('Pin', max_length=8,
                            primary_key=True)
 
@@ -60,6 +65,7 @@ STATUS_CHOICES = (
 )
 
 class Operation(models.Model):
+    active = models.BooleanField(default=True)
     add_date = models.DateTimeField(verbose_name='Дата операции',
                                     auto_now_add=True)
     edit_date = models.DateTimeField(auto_now=True)
@@ -74,6 +80,7 @@ class Operation(models.Model):
 
 
 class OperDetail(models.Model):
+    active = models.BooleanField(default=True)
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
     amount = models.PositiveSmallIntegerField(verbose_name='Количество')
