@@ -13,7 +13,11 @@ urlpatterns = [
     # Получение одного студента по id, изменение его данных (GET, PUT)
 
     path('food/', views.food_list),
+    # Получение списка всех выпечек, создание новой выпечки(GET, POST)
     path('food/<int:pk>/', views.food_detail),
+    # Получение одной выпечки по id, изменение его данных (GET, PUT)
+    path('food/<int:status>', views.FoodActiveList.as_view()),
+    # Получение списка по статусу 1 - True, 0 - False
 
     path('user', views.user_list),
     # Получение списка всех юзеров, создание нового юзера (GET, POST)
@@ -26,7 +30,7 @@ urlpatterns = [
 
     path('courses/', views.active_courses),
 
-    path('food/active', views.FoodActiveList.as_view()),
+
 
     path('pin/<str:pin>', views.pin_debt),
 

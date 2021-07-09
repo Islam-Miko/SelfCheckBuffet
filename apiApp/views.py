@@ -200,8 +200,8 @@ def active_courses(request):
 
 
 class FoodActiveList(views.APIView):
-    def get(self, request):
-        all_active_food = Food.objects.filter(active=True).order_by('id')
+    def get(self, request, status):
+        all_active_food = Food.objects.filter(active=status).order_by('id')
         serializer = FoodSerializer(all_active_food, many=True)
         return Response(serializer.data)
 
