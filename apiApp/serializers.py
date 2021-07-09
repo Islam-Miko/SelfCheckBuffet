@@ -5,10 +5,17 @@ from .validator_func  import *
 
 
 class CoursesSerializer(serializers.ModelSerializer):
+    """Для создания курса"""
     name = serializers.CharField(max_length=255, min_length=1,
                                  validators=[
                                      validators.UniqueValidator(queryset=Course.objects.all())
                                  ])
+    class Meta:
+        model = Course
+        fields = '__all__'
+
+class CoursesSerializer2(serializers.ModelSerializer):
+    """Для добавления к студенту курса"""
     class Meta:
         model = Course
         fields = '__all__'
@@ -18,6 +25,8 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = '__all__'
+
+
 
 
 class FoodSerializer(serializers.ModelSerializer):
@@ -72,7 +81,9 @@ class UserAdminSerializer(serializers.Serializer):
 
 
 class StudentSerializer2(serializers.Serializer):
+    """Создание нового студента"""
     id = serializers.ReadOnlyField()
+    active = serializers.BooleanField()
     name = serializers.CharField(max_length=25,
                                  min_length=1)
     last_name = serializers.CharField(max_length=50,
@@ -85,7 +96,6 @@ class StudentSerializer2(serializers.Serializer):
     pin = serializers.CharField(max_length=8,
                                 min_length=6,
                                 validators=[validators.UniqueValidator(queryset=Pin.objects.all())])
-    # course = CoursesSerializer()
     course = serializers.SlugRelatedField(slug_field='name',
                                           queryset=Course.objects.all()
                                           )
@@ -115,6 +125,16 @@ class StudentSerializer2(serializers.Serializer):
         instance.save()
         return instance
 
+class StudentUpdateSerializer(serializers.ModelSerializer):
+    """Сериалайзер для редактирования студента"""
+    pin = serializers.CharField(max_length=8,
+                                min_length=6)
+    course = serializers.SlugRelatedField(slug_field='name',
+                                          queryset=Course.objects.all()
+                                          )
+    class Meta:
+        model = Student
+        fields = '__all__'
 
 class AuthenticationSerializer(serializers.Serializer):
     phone = serializers.CharField(min_length=10,

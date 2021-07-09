@@ -77,7 +77,7 @@ def student_detail(request, pk):
         serializer = StudentSerializer2(student)
         return Response(serializer.data)
     elif request.method == 'PUT':
-        serializer = StudentSerializer2(student, data=request.data)
+        serializer = StudentUpdateSerializer(student, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

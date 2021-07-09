@@ -6,7 +6,9 @@ urlpatterns = [
     path('course/<int:pk>', views.course_detail),
 
     path('student', views.student_list),
+    # Получение списка всех студентов, создание нового студента(GET, POST)
     path('student/<int:pk>', views.student_detail),
+    # Получение одного студента по id, изменение его данных (GET, PUT)
 
     path('food/', views.food_list),
     path('food/<int:pk>/', views.food_detail),
