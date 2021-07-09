@@ -214,10 +214,10 @@ def pin_debt(request, pin):
 
 
 class OperationView(views.APIView):
-    def get(self, request):
-        operations = Operation.objects.all()
-        serializer = OperationSerializer(operations, many=True)
-        return Response(serializer.data)
+    # def get(self, request):
+    #     operations = Operation.objects.all()
+    #     serializer = OperationSerializer(operations, many=True)
+    #     return Response(serializer.data)
 
     def post(self, request):
         serializer = OperationSerializer(data=request.data)
