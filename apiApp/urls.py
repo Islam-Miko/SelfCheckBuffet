@@ -12,9 +12,11 @@ urlpatterns = [
     path('food/<int:pk>/', views.food_detail),
 
     path('user', views.user_list),
-    path('user<int:pk>/', views.user_detail),
-
+    # Получение списка всех юзеров, создание нового юзера (GET, POST)
+    path('user/<int:pk>', views.user_detail),
+    # Получение одного юзера по id, изменение его данных (GET, PUT)
     path('user/auth', views.authentication),
+    # Аутентификация юзера
 
     path('search_student/<str:name>/', views.search),
 

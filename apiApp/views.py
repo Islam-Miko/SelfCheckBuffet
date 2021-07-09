@@ -122,6 +122,7 @@ def food_detail(request, pk):
 @api_view(['GET', 'POST'])
 @csrf_exempt
 def user_list(request):
+    """Получение списка юзеров, создание нового юзера"""
     if request.method == 'GET':
         user = UserAdmin.objects.all().order_by('id')
         serializer = UserAdminSerializer(user, many=True)
@@ -141,6 +142,8 @@ def user_list(request):
 @api_view(['GET', 'PUT'])
 @csrf_exempt
 def user_detail(request, pk):
+    """Получение юзера по id
+    редактирование"""
     try:
         user_ = UserAdmin.objects.get(id=pk)
     except UserAdmin.DoesNotExist:
@@ -161,21 +164,22 @@ def user_detail(request, pk):
 @api_view(['POST'])
 @csrf_exempt
 def authentication(request):
+    """Аутентификация юзера по номеру и пину"""
     serializer = AuthenticationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     try:
         user_name = get_userAdmin(serializer.data)
-    except UserAdmin.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    if user_name.pin == serializer.data['Pin']:
         res = {
-            "success": True
-        }
+                "success": True,
+                "message": "Добро Пожаловать"
+            }
         return Response(res, status=status.HTTP_200_OK)
-    res = {
-        "success": False
-    }
-    return Response(res, status=status.HTTP_400_BAD_REQUEST)
+    except UserAdmin.DoesNotExist:
+        res = {
+            "success": False
+        }
+        return Response(res, status=status.HTTP_404_NOT_FOUND)
+
 
 
 @api_view(['GET'])

@@ -40,6 +40,7 @@ class FoodSerializer(serializers.ModelSerializer):
 
 
 class UserAdminSerializer(serializers.Serializer):
+    id = serializers.ReadOnlyField()
     name = serializers.CharField(min_length=1,
                                  max_length=25)
     phone = serializers.CharField(max_length=10,
@@ -116,12 +117,12 @@ class StudentSerializer2(serializers.Serializer):
 
 
 class AuthenticationSerializer(serializers.Serializer):
-    Phone = serializers.CharField(min_length=10,
+    phone = serializers.CharField(min_length=10,
                                       max_length=10,
                                       validators=[
                                           check_for_numberic,
                                       ])
-    Pin = serializers.CharField(max_length=8,
+    pin = serializers.CharField(max_length=8,
                                     min_length=6,
                                     validators=[
                                         check_for_numberic,

@@ -17,7 +17,8 @@ def create_pin(request_data):
 
 
 def get_userAdmin(data):
-    user_admin = UserAdmin.objects.filter(phone=data['Phone']).get()
+    """Ищет в экземплярах UserAdmin по Номеру и Пину"""
+    user_admin = UserAdmin.objects.filter(phone=data['phone'], pin=data['pin']).get()
     return user_admin
 
 
