@@ -28,7 +28,7 @@ class StudentSerializer(serializers.ModelSerializer):
         model = Student
         fields = '__all__'
 
-
+changed
 
 
 class FoodSerializer(serializers.ModelSerializer):
