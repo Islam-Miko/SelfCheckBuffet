@@ -1,6 +1,6 @@
 import datetime
 
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from rest_framework import views
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -184,7 +184,14 @@ def authentication(request):
 
 @api_view(['GET'])
 def search(request):
-    students = Student.objects.filter(name__icontains=f'{name}').all().order_by('last_name')
+    """Для поиска по ФИо"""
+    name = request.query_params.get('name')
+    last_name = request.query_params.get('last_name')
+    students_by_lastname = Student.objects.filter(last_name__icontains=f'{last_name}'
+                                      ).all().order_by('last_name')
+    students_by_name = Student.objects.filter(name__icontains=f'{name}'
+                                                  ).all().order_by('name')
+    students = students_by_lastname.union(students_by_name)
     if students:
         serializer = StudentSerializer(students, many=True)
         return Response(serializer.data)
@@ -209,8 +216,9 @@ class FoodActiveList(views.APIView):
 @api_view(['GET'])
 @csrf_exempt
 def pin_debt(request, pin):
-    debt_in_operation = Operation.objects.filter(pin=pin).values('pin').annotate(total_debt=Sum('debt_sum'))
-    return Response(debt_in_operation)
+    debt_in_operation = Pin.objects.filter(pin=pin).get()
+    serializer = Pinserializer(debt_in_operation)
+    return Response(serializer.data)
 
 
 class OperationView(views.APIView):

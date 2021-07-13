@@ -25,24 +25,26 @@ urlpatterns = [
     # Получение одного юзера по id, изменение его данных (GET, PUT)
     path('user/auth', views.authentication),
     # Аутентификация юзера
-# """
-#     path('search_student/<str:name>/', views.search),
-#
-#     path('courses/', views.active_courses),
-#
-#
-#
-#     path('pin/<str:pin>', views.pin_debt),
-#
-#
-#     path('operation', views.OperationView.as_view()),
-#     # Для создания операции (POST)
-#     path('operation/<str:pin>', views.OperationPinView.as_view()),
-#     # Показывает оперцаю совершенную юзерам с pin
-#     path('operation/debt/<str:pin>', views.OperationDebtPinView.as_view()),
-#     # path('pin/make/payment', views.payment),
-#
-# """
+
+    path('search_student/', views.search),
+    #Для поиска по имени или по фамилии или по обоим параметрам
+
+    path('courses/', views.active_courses),
+    # Для получения активных выпечек на сегодня(то, что есть в кухне\буффете)
+
+
+    path('pin/<str:pin>', views.pin_debt),
+    # Для получения долга на заданный пин
+
+
+    path('operation', views.OperationView.as_view()),
+    # Для создания операции (POST)
+    path('operation/<str:pin>', views.OperationPinView.as_view()),
+    # Показывает оперцаю совершенную юзерам с pin
+    path('operation/debt/<str:pin>', views.OperationDebtPinView.as_view()),
+    # path('pin/make/payment', views.payment),
+
+
 
     # path('imageLoad/', views.ImageLoad.as_view()),
 

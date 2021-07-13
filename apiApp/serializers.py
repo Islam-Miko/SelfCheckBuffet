@@ -144,3 +144,10 @@ class OperationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Operation
         fields = '__all__'
+
+
+class Pinserializer(serializers.ModelSerializer):
+    """Для вывода долга определенному Пину"""
+    class Meta:
+        model = Pin
+        fields  = ['pin', 'debt']
