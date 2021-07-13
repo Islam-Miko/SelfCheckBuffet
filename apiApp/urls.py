@@ -31,7 +31,7 @@ urlpatterns = [
 #     path('courses/', views.active_courses),
 #
 #
-# 
+#
 #     path('pin/<str:pin>', views.pin_debt),
 #
 #

@@ -15,6 +15,7 @@ class CoursesSerializer(serializers.ModelSerializer):
         model = Course
         fields = '__all__'
 
+
 class CoursesSerializer2(serializers.ModelSerializer):
     """Для добавления к студенту курса
     Если надо будет работать с нестед json у студента"""
@@ -29,25 +30,11 @@ class StudentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class FoodSerializer(serializers.ModelSerializer):
     """Получение списка и создание"""
     class Meta:
         model = Food
         fields = '__all__'
-
-
-# class PinSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Pin
-#         fields = '__all__'
-#
-#     def validate_pin(self, data):
-#         if not data.isnumeric():
-#             raise serializers.ValidationError(['Может содержать лишь цифры!'])
-#
-#         if len(data) < 6:
-#             raise serializers.ValidationError(['Длина пина не может быть меньше 6'])
 
 
 class UserAdminSerializer(serializers.Serializer):
@@ -151,8 +138,6 @@ class AuthenticationSerializer(serializers.Serializer):
                                     validators=[
                                         check_for_numberic,
                                     ])
-
-
 
 
 class OperationSerializer(serializers.ModelSerializer):
