@@ -111,7 +111,7 @@ def food_detail(request, pk):
         serializer = FoodSerializer(food)
         return Response(serializer.data)
     elif request.method == 'PUT':
-        serializer = FoodSerializer(food, data=request.data)
+        serializer = FoodUpdateSerializer(food, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
@@ -153,7 +153,7 @@ def user_detail(request, pk):
         serializer = UserAdminSerializer(user_)
         return Response(serializer.data)
     elif request.method == 'PUT':
-        serializer = UserAdminSerializer(user_, data=request.data)
+        serializer = UserAdminUpdateSerializer(user_, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

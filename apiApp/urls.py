@@ -12,7 +12,7 @@ urlpatterns = [
     path('student/<int:pk>', views.student_detail),
     # Получение одного студента по id, изменение его данных (GET, PUT)
 
-    path('food/', views.food_list),
+    path('foods', views.food_list),
     # Получение списка всех выпечек, создание новой выпечки(GET, POST)
     path('food/<int:pk>/', views.food_detail),
     # Получение одной выпечки по id, изменение его данных (GET, PUT)
@@ -32,10 +32,8 @@ urlpatterns = [
     path('courses/', views.active_courses),
     # Для получения активных выпечек на сегодня(то, что есть в кухне\буффете)
 
-
     path('pin/<str:pin>', views.pin_debt),
     # Для получения долга на заданный пин
-
 
     path('operation', views.OperationView.as_view()),
     # Для создания операции (POST)

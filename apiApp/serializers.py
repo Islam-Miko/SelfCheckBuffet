@@ -37,6 +37,14 @@ class FoodSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class FoodUpdateSerializer(serializers.ModelSerializer):
+    """Для редактирования еды"""
+    image = serializers.ImageField(required=False)
+    class Meta:
+        model = Food
+        fields = '__all__'
+
+
 class UserAdminSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     name = serializers.CharField(min_length=1,
@@ -67,6 +75,15 @@ class UserAdminSerializer(serializers.Serializer):
         instance.pin = validated_data.get('pin', instance.pin)
         instance.save()
         return instance
+
+
+class UserAdminUpdateSerializer(serializers.ModelSerializer):
+    pin = serializers.CharField(max_length=8,
+                                min_length=6,
+                                required=False)
+    class Meta:
+        model = UserAdmin
+        fields = '__all__'
 
 
 class StudentSerializer2(serializers.Serializer):
