@@ -6,13 +6,15 @@ def create_pin(request_data):
     if phone is None:
         raise PhonePass
     pin = phone[4:]
-    pins_in_PinModel = Pin.objects.filter(pin=pin).last()
-    if pins_in_PinModel:
-        request_data['pin'] = phone[3:]
-        return request_data
-    else:
-        request_data['pin'] = phone[4:]
-        return request_data
+    while True:
+        pins_in_PinModel = Pin.objects.filter(pin=pin).last()
+        if pins_in_PinModel:
+            pin = str(int(pins_in_PinModel.pin)+1).zfill(6)
+        else:
+            break
+    request_data['pin'] = pin
+    return request_data
+
 
 
 
