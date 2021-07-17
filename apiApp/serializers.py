@@ -238,3 +238,11 @@ class MainOperationCreateSerializer(serializers.Serializer):
     total_sum = serializers.FloatField()
     debt_sum = serializers.FloatField()
     status = serializers.CharField()
+
+
+class PinAllSerializer(serializers.ModelSerializer):
+    """Для вывода долга определенному Пину"""
+    operations = OperationSerializer(many=True)
+    class Meta:
+        model = Pin
+        fields  = ['pin', 'debt', 'operations']

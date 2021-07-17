@@ -58,6 +58,10 @@ class Pin(models.Model):
     def __str__(self):
         return f'Пин: {self.pin}'
 
+    @property
+    def operations(self):
+        return Operation.objects.filter(pin=self).order_by('-add_date')
+
 STATUS_CHOICES = (
     ('ACTIVE', 'Незакрыт'),
     ('NOTACTIVE', 'Закрыт'),

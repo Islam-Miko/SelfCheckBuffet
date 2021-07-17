@@ -233,12 +233,10 @@ class OperationView(views.APIView):
         pin = entrance_serializer.data.pop('pin')
         money = entrance_serializer.data.pop('money')
         products = entrance_serializer.data.pop('products')
-
         buyer_by_pin = get_buyer_by_pin(pin)
         total_sum_to_pay = get_total_sum_for_products(products)
         debt_sum, change_money, OPER_STATUS = determine_DCOP(total_sum_to_pay, money)
         take_A_note_to_pin_debt(debt_sum, buyer_by_pin)
-
         data_to_opertaion = {
             "pin" : buyer_by_pin,
             "status": OPER_STATUS,
@@ -247,8 +245,6 @@ class OperationView(views.APIView):
             "product" : products,
         }
         opera = make_a_operation(data_to_opertaion)
-
-
         datas = {
             "id": opera.id,
             "pin": {"pin" : buyer_by_pin.pin,
@@ -261,7 +257,6 @@ class OperationView(views.APIView):
             "debt_sum" : debt_sum,
             "total_sum" : total_sum_to_pay
         }
-
         main_result_serializer = MainOperationCreateSerializer(datas)
         return Response(main_result_serializer.data)
 
@@ -270,8 +265,8 @@ class OperationView(views.APIView):
 
 class OperationPinView(views.APIView):
     def get(self, request, pin):
-        operations = Operation.objects.filter(pin=pin)
-        serializer = OperationSerializer(operations, many=True)
+        pin_obj = Pin.objects.filter(pin=pin).get()
+        serializer = PinAllSerializer(pin_obj)
         return Response(serializer.data)
 
 
