@@ -102,7 +102,7 @@ class StudentSerializer2(serializers.Serializer):
     pin = serializers.CharField(max_length=8,
                                 min_length=6,
                                 validators=[validators.UniqueValidator(queryset=Pin.objects.all())])
-    course = serializers.SlugRelatedField(slug_field='name',
+    course = serializers.SlugRelatedField(slug_field='id',
                                           queryset=Course.objects.all()
                                           )
 
@@ -136,7 +136,7 @@ class StudentUpdateSerializer(serializers.ModelSerializer):
     """Сериалайзер для редактирования студента"""
     pin = serializers.CharField(max_length=8,
                                 min_length=6)
-    course = serializers.SlugRelatedField(slug_field='name',
+    course = serializers.SlugRelatedField(slug_field='id',
                                           queryset=Course.objects.all()
                                           )
     class Meta:
