@@ -41,7 +41,7 @@ class UserAdmin(models.Model):
 class Food(models.Model):
     amount = models.PositiveSmallIntegerField('Количество', default=0)
     name = models.CharField('Food', max_length=50)
-    image = models.ImageField(verbose_name='Ссылка на картинку', upload_to='buffet/')
+    image = models.URLField('Картинка')
     price = models.FloatField('Цена')
     active = models.BooleanField(verbose_name='Наличие на сегодня')
 

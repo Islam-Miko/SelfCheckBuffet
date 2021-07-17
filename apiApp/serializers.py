@@ -39,7 +39,7 @@ class FoodSerializer(serializers.ModelSerializer):
 
 class FoodUpdateSerializer(serializers.ModelSerializer):
     """Для редактирования еды"""
-    image = serializers.ImageField(required=False)
+    image = serializers.URLField(required=False)
     class Meta:
         model = Food
         fields = '__all__'

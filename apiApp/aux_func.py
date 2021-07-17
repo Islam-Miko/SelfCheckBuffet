@@ -8,6 +8,10 @@ def create_pin(request_data):
     pin = phone[4:]
     while True:
         pins_in_PinModel = Pin.objects.filter(pin=pin).last()
+        # комбинация filter и last применнена для обхода try-except блока
+        # filter возвращает queryset(В Pin модели пины уникальны.), а last последний объект.
+        # get при не нахождении выбрасывает ошибку DoesNotExist, которую нужно отлавливать
+        # и отрабатывать отдельно
         if pins_in_PinModel:
             pin = str(int(pins_in_PinModel.pin)+1).zfill(6)
         else:
