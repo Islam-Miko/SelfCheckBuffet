@@ -228,11 +228,13 @@ class OperationView(views.APIView):
     #     return Response(serializer.data)
 
     def post(self, request):
-        serializer = OperationSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        operation_serializer = TakingPreOperationSerializer(data=request.data)
+
+        operation_serializer.is_valid(raise_exception=True)
+        operation_serializer.save()
+        print(operation_serializer.data)
+        return Response(1)
+        return Response(operation_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class OperationPinView(views.APIView):
