@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import *
-from .aux_func import create_pin, get_userAdmin
+from .aux_func import *
 from .exceptions import PhonePass
 
 
@@ -228,13 +228,44 @@ class OperationView(views.APIView):
     #     return Response(serializer.data)
 
     def post(self, request):
-        operation_serializer = TakingPreOperationSerializer(data=request.data)
+        entrance_serializer = TakingPreOperationSerializer(data=request.data)
+        entrance_serializer.is_valid(raise_exception=True)
+        pin = entrance_serializer.data.pop('pin')
+        money = entrance_serializer.data.pop('money')
+        products = entrance_serializer.data.pop('products')
 
-        operation_serializer.is_valid(raise_exception=True)
-        operation_serializer.save()
-        print(operation_serializer.data)
-        return Response(1)
-        return Response(operation_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        buyer_by_pin = get_buyer_by_pin(pin)
+        total_sum_to_pay = get_total_sum_for_products(products)
+        debt_sum, change_money, OPER_STATUS = determine_DCOP(total_sum_to_pay, money)
+        take_A_note_to_pin_debt(debt_sum, buyer_by_pin)
+
+        data_to_opertaion = {
+            "pin" : buyer_by_pin,
+            "status": OPER_STATUS,
+            "debt_sum": debt_sum,
+            "total_sum": total_sum_to_pay,
+            "product" : products,
+        }
+        opera = make_a_operation(data_to_opertaion)
+
+
+        datas = {
+            "id": opera.id,
+            "pin": {"pin" : buyer_by_pin.pin,
+                    "debt" : buyer_by_pin.debt
+                    },
+            "add_date" : opera.add_date,
+            "edit_date" : opera.edit_date,
+            "change" : change_money,
+            "status" : OPER_STATUS,
+            "debt_sum" : debt_sum,
+            "total_sum" : total_sum_to_pay
+        }
+
+        main_result_serializer = MainOperationCreateSerializer(datas)
+        return Response(main_result_serializer.data)
+
+
 
 
 class OperationPinView(views.APIView):
@@ -255,34 +286,3 @@ class OperationDebtPinView(views.APIView):
 
 
 
-# @api_view(['GET', 'POST'])
-# def pin_list(request):
-#     if request.method == 'GET':
-#         foods = Pin.objects.all()
-#         serializer = PinSerializer(foods, many=True)
-#         return Response(serializer.data)
-#     elif request.method == 'POST':
-#         serializer = PinSerializer(data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save()
-#             return Response('Successfully created', status=status.HTTP_201_CREATED)
-#
-# @api_view(['GET', 'PUT', 'DELETE'])
-# def pin_detail(request, pk):
-#     try:
-#         pin = Pin.objects.get(id=pk)
-#     except Pin.DoesNotExist:
-#         return Response('Pin does not exist', status=status.HTTP_404_NOT_FOUND)
-#
-#     if request.method == 'GET':
-#         serializer = PinSerializer(pin)
-#         return Response(serializer.data)
-#     elif request.method == 'PUT':
-#         serializer = PinSerializer(pin, data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#     elif request.method == 'DELETE':
-#         pin.delete()
-#         return Response('DELETED', status=status.HTTP_204_NO_CONTENT)

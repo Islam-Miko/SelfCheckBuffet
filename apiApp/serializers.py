@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework import serializers
 from rest_framework import validators
 from .models import *
@@ -169,6 +171,11 @@ class Pinserializer(serializers.ModelSerializer):
         model = Pin
         fields  = ['pin', 'debt']
 
+class Pinserializer2(serializers.Serializer):
+    """Для вывода долга определенному Пину"""
+    pin = serializers.CharField()
+    debt = serializers.FloatField()
+
 class PreOperationDetailSerializer(serializers.Serializer):
     amount = serializers.IntegerField()
     id = serializers.IntegerField()
@@ -181,60 +188,53 @@ class TakingPreOperationSerializer(serializers.Serializer):
                                 min_length=6)
     products = PreOperationDetailSerializer(many=True)
 
-    def create(self, validated_data):
-        pin_info = Pin.objects.filter(pin=validated_data.pop('pin')).get()
-        paid_money = validated_data.pop('money')
-        products = validated_data.pop('products')
+    # def create(self, validated_data):
+    #     pin_info = Pin.objects.filter(pin=validated_data.pop('pin')).get()
+    #     paid_money = validated_data.pop('money')
+    #     products = validated_data.pop('products')
+    #
+    #
+    #     total_sum_buyed_products = 0
+    #     # total_sum_buyed_products = sum([Food.objects.get(id=product['id']).price for product in products])
+    #     for product in products:
+    #         food = Food.objects.get(id=product['id'])
+    #         price_for_amount_product = food.price * product['amount']
+    #         total_sum_buyed_products += price_for_amount_product
+    #
+    #     difference_money_operation = total_sum_buyed_products - paid_money
+    #
+    #     debt_sum = 0
+    #     change_money = 0
+    #     OPER_STATUS = 'ACTIVE'
+    #     if difference_money_operation > 0:
+    #         debt_sum = difference_money_operation
+    #     elif difference_money_operation < 0:
+    #         change_money = difference_money_operation
+    #         OPER_STATUS = 'NOTACTIVE'
+    #
+    #     pin_info.debt += debt_sum
+    #     pin_info.save()
+    #
+    #     operation = Operation.objects.create(pin=pin_info,
+    #                                          total_sum=total_sum_buyed_products,
+    #                                          debt_sum=debt_sum,
+    #                                          status=OPER_STATUS)
+    #     for product in products:
+    #         food_to_oper_detail = Food.objects.get(id=product['id'])
+    #         oper_detail = OperDetail.objects.create(operation=operation,
+    #                                                 food=food_to_oper_detail,
+    #                                                 amount=product['amount'])
+    #         oper_detail.save()
+    #     return operation
 
 
-        total_sum_buyed_products = 0
-        # total_sum_buyed_products = sum([Food.objects.get(id=product['id']).price for product in products])
-        for product in products:
-            food = Food.objects.get(id=product['id'])
-            price_for_amount_product = food.price * product['amount']
-            total_sum_buyed_products += price_for_amount_product
 
-        difference_money_operation = total_sum_buyed_products - paid_money
-
-        debt_sum = 0
-        change_money = 0
-        OPER_STATUS = 'ACTIVE'
-        if difference_money_operation > 0:
-            debt_sum = difference_money_operation
-        elif difference_money_operation < 0:
-            change_money = difference_money_operation
-            OPER_STATUS = 'NOTACTIVE'
-
-        pin_info.debt += debt_sum
-        pin_info.save()
-
-        operation = Operation.objects.create(pin=pin_info,
-                                             total_sum=total_sum_buyed_products,
-                                             debt_sum=debt_sum,
-                                             status=OPER_STATUS)
-        for product in products:
-            food_to_oper_detail = Food.objects.get(id=product['id'])
-            oper_detail = OperDetail.objects.create(operation=operation,
-                                                    food=food_to_oper_detail,
-                                                    amount=product['amount'])
-            oper_detail.save()
-        return operation
-
-
-
-
-{
-  "addDate": "2021-07-17T15:18:29.259Z",
-  "change": 0,
-  "debt": 0,
-  "editDate": "2021-07-17T15:18:29.259Z",
-  "id": 0,
-  "pin": {
-    "debt": 0,
-    "pin": "string"
-  },
-  "status": "CLOSED",
-  "total": 0
-}
 class MainOperationCreateSerializer(serializers.Serializer):
-    operation = OperationSerializer()
+    change = serializers.FloatField()
+    pin = Pinserializer()
+    id = serializers.ReadOnlyField()
+    add_date = serializers.DateTimeField(required=False)
+    edit_date = serializers.DateTimeField(required=False)
+    total_sum = serializers.FloatField()
+    debt_sum = serializers.FloatField()
+    status = serializers.CharField()
