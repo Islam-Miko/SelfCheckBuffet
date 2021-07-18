@@ -35,18 +35,14 @@ urlpatterns = [
     path('pin/<str:pin>', views.pin_debt),
     # Для получения долга на заданный пин
 
-    path('operation', views.OperationView.as_view()),
+    path('operation/append', views.OperationView.as_view()),
     # Для создания операции (POST)
     path('operation/<str:pin>', views.OperationPinView.as_view()),
     # Показывает оперцаю совершенную юзерам с pin
-    path('operation/debt/<str:pin>', views.OperationDebtPinView.as_view()),
-    # path('pin/make/payment', views.payment),
+    # path('operation/debt/<str:pin>', views.OperationDebtPinView.as_view()),
 
+    path('pin/make/payment', views.MakePaymentView.as_view()),
+    # Для оплаты платежа
 
-
-    # path('imageLoad/', views.ImageLoad.as_view()),
-
-    # path('pin_list/', views.pin_list),
-    # path('pin_detail/<int:pk>/', views.pin_detail),
 
 ]

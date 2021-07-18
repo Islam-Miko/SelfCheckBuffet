@@ -87,3 +87,43 @@ def make_a_operation(data):
     return operation
 
 
+def change_operation_status(pin_instance, paid_sum):
+    """Меняет статус неоплаченных операций на NOTACTIVE-Оплачено(Закрыто) у пина"""
+    all_active_operation_by_pin = Operation.objects.filter(pin=pin_instance,
+                                                           status="ACTIVE").order_by('add_date').all()
+    remain_of_paid_sum = paid_sum
+    flag = False
+    for active_operation in all_active_operation_by_pin:
+        remain_of_paid_sum -= active_operation.debt_sum
+        if flag:
+            break
+        if remain_of_paid_sum < 0:
+            active_operation.debt_sum = abs(remain_of_paid_sum)
+            active_operation.save()
+            flag = True
+        elif remain_of_paid_sum >= 0:
+            active_operation.debt_sum = 0
+            active_operation.status = "NOTACTIVE"
+            active_operation.save()
+        print(remain_of_paid_sum)
+
+
+def computate_change(pin_instance, payment):
+    """Определяет сдачу и меняет у экземпляра ПИН поле долг"""
+    change = pin_instance.debt - payment
+    if change < 0:
+        pin_instance.debt = 0
+        change = abs(change)
+        pin_instance.save()
+    elif change > 0:
+        pin_instance.debt = change
+        pin_instance.save()
+        change = 0
+    else:
+        pin_instance.debt = 0
+        pin_instance.save()
+    return change
+
+
+
+

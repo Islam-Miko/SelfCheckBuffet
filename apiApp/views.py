@@ -261,8 +261,6 @@ class OperationView(views.APIView):
         return Response(main_result_serializer.data)
 
 
-
-
 class OperationPinView(views.APIView):
     def get(self, request, pin):
         pin_obj = Pin.objects.filter(pin=pin).get()
@@ -275,6 +273,36 @@ class OperationDebtPinView(views.APIView):
         operations = Operation.objects.filter(pin=pin, status='ACTIVE')
         serializer = OperationSerializer(operations, many=True)
         return Response(serializer.data)
+
+
+# class OperationDebtPinView(views.APIView):
+#     def get(self, request, pin):
+#         operations = Operation.objects.filter(pin=pin, status='ACTIVE')
+#         serializer = OperationSerializer(operations, many=True)
+#         return Response(serializer.data)
+
+
+class MakePaymentView(views.APIView):
+    def put(self, request):
+        try:
+            pin_instance = Pin.objects.filter(pin=request.data.pop('pin')).get()
+        except Pin.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        payment = request.data['payment']
+        change = computate_change(pin_instance, payment)
+        change_operation_status(pin_instance,payment-change)
+        data = {
+                "change": change,
+                "payment": payment,
+                "debt": pin_instance.debt
+            }
+        serializer = PaymentSerializer(data)
+        return Response(serializer.data)
+
+
+
+
 
 
 

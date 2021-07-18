@@ -246,3 +246,13 @@ class PinAllSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pin
         fields  = ['pin', 'debt', 'operations']
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    change = serializers.FloatField()
+    payment = serializers.FloatField()
+    class Meta:
+        model = Pin
+        fields = ('debt',
+                  'payment',
+                  'change')
