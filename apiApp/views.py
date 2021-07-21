@@ -233,7 +233,10 @@ class OperationView(views.APIView):
         pin = entrance_serializer.data.pop('pin')
         money = entrance_serializer.data.pop('money')
         products = entrance_serializer.data.pop('products')
-        buyer_by_pin = get_buyer_by_pin(pin)
+        try:
+            buyer_by_pin = get_buyer_by_pin(pin)
+        except Pin.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         total_sum_to_pay = get_total_sum_for_products(products)
         debt_sum, change_money, OPER_STATUS = determine_DCOP(total_sum_to_pay, money)
         take_A_note_to_pin_debt(debt_sum, buyer_by_pin)
