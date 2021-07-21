@@ -228,41 +228,44 @@ class OperationView(views.APIView):
     #     return Response(serializer.data)
 
     def post(self, request):
-        entrance_serializer = TakingPreOperationSerializer(data=request.data)
-        entrance_serializer.is_valid(raise_exception=True)
-        pin = entrance_serializer.data.pop('pin')
-        money = entrance_serializer.data.pop('money')
-        products = entrance_serializer.data.pop('products')
         try:
-            buyer_by_pin = get_buyer_by_pin(pin)
-        except Pin.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        total_sum_to_pay = get_total_sum_for_products(products)
-        debt_sum, change_money, OPER_STATUS = determine_DCOP(total_sum_to_pay, money)
-        take_A_note_to_pin_debt(debt_sum, buyer_by_pin)
-        data_to_opertaion = {
-            "pin" : buyer_by_pin,
-            "status": OPER_STATUS,
-            "debt_sum": debt_sum,
-            "total_sum": total_sum_to_pay,
-            "product" : products,
-        }
-        opera = make_a_operation(data_to_opertaion)
-        datas = {
-            "id": opera.id,
-            "pin": {"pin" : buyer_by_pin.pin,
-                    "debt" : buyer_by_pin.debt
-                    },
-            "add_date" : opera.add_date,
-            "edit_date" : opera.edit_date,
-            "change" : change_money,
-            "status" : OPER_STATUS,
-            "debt_sum" : debt_sum,
-            "total_sum" : total_sum_to_pay
-        }
-        main_result_serializer = MainOperationCreateSerializer(datas)
-        return Response(main_result_serializer.data)
+            entrance_serializer = TakingPreOperationSerializer(data=request.data)
+            entrance_serializer.is_valid(raise_exception=True)
+            pin = entrance_serializer.data.pop('pin')
+            money = entrance_serializer.data.pop('money')
+            products = entrance_serializer.data.pop('products')
 
+            buyer_by_pin = get_buyer_by_pin(pin)
+
+            total_sum_to_pay = get_total_sum_for_products(products)
+            debt_sum, change_money, OPER_STATUS = determine_DCOP(total_sum_to_pay, money)
+            take_A_note_to_pin_debt(debt_sum, buyer_by_pin)
+            data_to_opertaion = {
+                "pin" : buyer_by_pin,
+                "status": OPER_STATUS,
+                "debt_sum": debt_sum,
+                "total_sum": total_sum_to_pay,
+                "product" : products,
+            }
+            opera = make_a_operation(data_to_opertaion)
+            datas = {
+                "id": opera.id,
+                "pin": {"pin" : buyer_by_pin.pin,
+                        "debt" : buyer_by_pin.debt
+                        },
+                "add_date" : opera.add_date,
+                "edit_date" : opera.edit_date,
+                "change" : change_money,
+                "status" : OPER_STATUS,
+                "debt_sum" : debt_sum,
+                "total_sum" : total_sum_to_pay
+            }
+            main_result_serializer = MainOperationCreateSerializer(datas)
+            return Response(main_result_serializer.data)
+        except Pin.DoesNotExist:
+            return Response({'error':'NO such PIN'}, status=status.HTTP_404_NOT_FOUND)
+        except Food.DoesNotExist:
+            return Response({'error':'NO Food with such ID'},status=status.HTTP_404_NOT_FOUND)
 
 class OperationPinView(views.APIView):
     def get(self, request, pin):
