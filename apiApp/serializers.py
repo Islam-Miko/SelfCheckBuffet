@@ -134,6 +134,28 @@ class StudentSerializer2(serializers.Serializer):
         return instance
 
 
+class StudentSerializer3(serializers.Serializer):
+    """Создание нового студента"""
+    id = serializers.ReadOnlyField()
+    active = serializers.BooleanField()
+    name = serializers.CharField(max_length=25,
+                                 min_length=1)
+    last_name = serializers.CharField(max_length=50,
+                                      min_length=1)
+    phone = serializers.CharField(max_length=10,
+                                  min_length=10,
+                                  validators=[
+                                      check_for_numberic,
+                                  ])
+    pin = serializers.CharField(max_length=8,
+                                min_length=6,
+                                validators=[validators.UniqueValidator(queryset=Pin.objects.all())])
+    course = serializers.SlugRelatedField(slug_field='name',
+                                          queryset=Course.objects.all()
+                                          )
+
+
+
 class StudentUpdateSerializer(serializers.ModelSerializer):
     """Сериалайзер для редактирования студента"""
     pin = serializers.CharField(max_length=8,

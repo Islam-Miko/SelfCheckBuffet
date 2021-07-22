@@ -74,7 +74,7 @@ def student_detail(request, pk):
         return Response(False, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = StudentSerializer2(student)
+        serializer = StudentSerializer3(student)
         return Response(serializer.data)
     elif request.method == 'PUT':
         serializer = StudentUpdateSerializer(student, data=request.data)
