@@ -273,7 +273,7 @@ class PaymentDataTaking(serializers.Serializer):
 
 
 class OperationDetailPinSerializer(serializers.ModelSerializer):
-    add_date = serializers.DateTimeField(format='%Y:%m:%d')
+    add_date = serializers.DateTimeField(format='%Y.%m.%d')
     class Meta:
         model = Operation
         fields = ('add_date',
