@@ -153,6 +153,28 @@ class StudentSerializer3(serializers.Serializer):
     course = serializers.SlugRelatedField(slug_field='name',
                                           queryset=Course.objects.all()
                                           )
+class CourseStudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ('id', 'name')
+
+class StudentSerializer4(serializers.Serializer):
+    """Создание нового студента"""
+    id = serializers.ReadOnlyField()
+    active = serializers.BooleanField()
+    name = serializers.CharField(max_length=25,
+                                 min_length=1)
+    last_name = serializers.CharField(max_length=50,
+                                      min_length=1)
+    phone = serializers.CharField(max_length=10,
+                                  min_length=10,
+                                  validators=[
+                                      check_for_numberic,
+                                  ])
+    pin = serializers.CharField(max_length=8,
+                                min_length=6,
+                                validators=[validators.UniqueValidator(queryset=Pin.objects.all())])
+    course = CourseStudentSerializer()
 
 
 

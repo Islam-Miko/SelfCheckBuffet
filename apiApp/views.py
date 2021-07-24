@@ -51,7 +51,7 @@ def course_detail(request, pk):
 def student_list(request):
     if request.method == 'GET':
         students = Student.objects.all().order_by('id')
-        serializer = StudentSerializer3(students, many=True)
+        serializer = StudentSerializer4(students, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
         try:
@@ -74,10 +74,10 @@ def student_detail(request, pk):
         return Response(False, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = StudentSerializer3(student)
+        serializer = StudentSerializer4(student)
         return Response(serializer.data)
     elif request.method == 'PUT':
-        serializer = StudentUpdateSerializer(student, data=request.data)
+        serializer = StudentSerializer4(student, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
