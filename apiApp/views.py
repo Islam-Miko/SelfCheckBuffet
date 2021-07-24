@@ -51,7 +51,7 @@ def course_detail(request, pk):
 def student_list(request):
     if request.method == 'GET':
         students = Student.objects.all().order_by('id')
-        serializer = StudentSerializer2(students, many=True)
+        serializer = StudentSerializer3(students, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
         try:
