@@ -193,7 +193,7 @@ def search(request):
                                                   ).all().order_by('name')
     students = students_by_lastname.union(students_by_name)
     if students:
-        serializer = StudentSerializer(students, many=True)
+        serializer = StudentSerializer4(students, many=True)
         return Response(serializer.data)
     return Response(False, status=status.HTTP_404_NOT_FOUND)
 
