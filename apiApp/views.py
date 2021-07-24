@@ -290,8 +290,10 @@ class OperationDebtPinView(views.APIView):
 
 class MakePaymentView(views.APIView):
     def put(self, request):
+        serializer = PaymentDataTaking(data=request.data)
+        serializer.is_valid(raise_exception=True)
         try:
-            pin_instance = Pin.objects.filter(pin=request.data.pop('pin')).get()
+            pin_instance = Pin.objects.filter(pin=serializer.data.pop('pin')).get()
         except Pin.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 

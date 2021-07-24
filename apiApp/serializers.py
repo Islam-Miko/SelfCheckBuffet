@@ -241,3 +241,10 @@ class PaymentSerializer(serializers.ModelSerializer):
         fields = ('debt',
                   'payment',
                   'change')
+
+
+class PaymentDataTaking(serializers.Serializer):
+    pin = serializers.CharField(min_length=6,
+                                max_length=7,
+                                validators=[check_for_numberic,])
+    payment = serializers.FloatField()
