@@ -270,3 +270,11 @@ class PaymentDataTaking(serializers.Serializer):
                                 max_length=7,
                                 validators=[check_for_numberic,])
     payment = serializers.FloatField()
+
+
+class OperationDetailPinSerializer(serializers.ModelSerializer):
+    add_date = serializers.DateTimeField(format='%Y:%m:%d')
+    class Meta:
+        model = Operation
+        fields = ('add_date',
+                  'debt_sum')

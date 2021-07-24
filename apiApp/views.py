@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 from .serializers import *
 from .aux_func import *
 from .exceptions import PhonePass
@@ -14,6 +15,7 @@ from .exceptions import PhonePass
 @api_view(['GET', 'POST'])
 @csrf_exempt
 def course_list(request):
+    """Создание курса"""
     if request.method == 'GET':
         all_courses = Course.objects.all().order_by('id')
         serializer = CoursesSerializer(all_courses, many=True)
@@ -29,6 +31,7 @@ def course_list(request):
 @api_view(['GET', 'PUT'])
 @csrf_exempt
 def course_detail(request, pk):
+    """редактирование курса"""
     try:
         course = Course.objects.get(id=pk)
     except Course.DoesNotExist:
@@ -49,6 +52,7 @@ def course_detail(request, pk):
 @api_view(['GET', 'POST'])
 @csrf_exempt
 def student_list(request):
+    """Создание студента"""
     if request.method == 'GET':
         students = Student.objects.all().order_by('id')
         serializer = StudentSerializer4(students, many=True)
@@ -68,6 +72,7 @@ def student_list(request):
 @api_view(['GET', 'PUT'])
 @csrf_exempt
 def student_detail(request, pk):
+    """Редактирование студента"""
     try:
         student = Student.objects.get(id=pk)
     except Student.DoesNotExist:
@@ -87,6 +92,7 @@ def student_detail(request, pk):
 @api_view(['GET', 'POST'])
 @csrf_exempt
 def food_list(request):
+    """Создание и список выпечек"""
     if request.method == 'GET':
         foods = Food.objects.all().order_by('id')
         serializer = FoodSerializer(foods, many=True)
@@ -102,6 +108,7 @@ def food_list(request):
 @api_view(['GET', 'PUT'])
 @csrf_exempt
 def food_detail(request, pk):
+    """Редактирование выпечки"""
     try:
         food = Food.objects.get(id=pk)
     except Food.DoesNotExist:
@@ -200,6 +207,8 @@ def search(request):
 
 @api_view(['GET'])
 def active_courses(request):
+    """Для получения активных курсов, при редактировании студентов или создании студентов
+    """
     all_active_courses = Course.objects.filter(start_date__lte=datetime.datetime.now(),
                                                end_date__gt=datetime.datetime.now()).order_by('id')
     serializer = CoursesSerializer(all_active_courses, many=True)
@@ -207,6 +216,8 @@ def active_courses(request):
 
 
 class FoodActiveList(views.APIView):
+    """Для получения активных на сегодня выпечек,
+    мобприложение"""
     def get(self, request, status):
         all_active_food = Food.objects.filter(active=status).order_by('id')
         serializer = FoodSerializer(all_active_food, many=True)
@@ -216,6 +227,7 @@ class FoodActiveList(views.APIView):
 @api_view(['GET'])
 @csrf_exempt
 def pin_debt(request, pin):
+    """Выводит долг для пина"""
     debt_in_operation = Pin.objects.filter(pin=pin).get()
     serializer = Pinserializer(debt_in_operation)
     return Response(serializer.data)
@@ -289,6 +301,7 @@ class OperationDebtPinView(views.APIView):
 
 
 class MakePaymentView(views.APIView):
+    """Взнос денег для закрытия долгов"""
     def put(self, request):
         serializer = PaymentDataTaking(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -299,7 +312,7 @@ class MakePaymentView(views.APIView):
 
         payment = request.data['payment']
         change = computate_change(pin_instance, payment)
-        change_operation_status(pin_instance,payment-change)
+        change_operation_status(pin_instance, payment-change)
         data = {
                 "change": change,
                 "payment": payment,
@@ -307,6 +320,17 @@ class MakePaymentView(views.APIView):
             }
         serializer = PaymentSerializer(data)
         return Response(serializer.data)
+
+
+class OperationDetailPin(views.APIView):
+    """View для вывода операций совершенных в долг.
+    При закрытии долгов, в мобприложении, будут видны долговые операции"""
+    def get(self, request, pin):
+        pin_instance = Pin.objects.filter(pin=pin).get()
+        active_operations = Operation.objects.filter(pin=pin_instance, status='ACTIVE')
+        serializer = OperationDetailPinSerializer(active_operations, many=True)
+        return Response(serializer.data)
+
 
 
 

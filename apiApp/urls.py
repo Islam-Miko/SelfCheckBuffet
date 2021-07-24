@@ -44,5 +44,8 @@ urlpatterns = [
     path('pin/make/payment', views.MakePaymentView.as_view()),
     # Для оплаты платежа
 
+    path('operation/detail/<str:pin>', views.OperationDetailPin.as_view()),
+    # Для создания операции (POST)
+
 
 ]
